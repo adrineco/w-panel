@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: hsl(174, 55%, 45%);
+  --color-background: hsl(200, 20%, 10%);
+  --color-card: hsl(200, 20%, 13%);
+  --color-sidebar: hsl(200, 28%, 7%);
+  --color-muted: hsl(200, 14%, 16%);
+  --color-destructive: hsl(0, 62%, 45%);
+  --color-success: hsl(152, 55%, 45%);
+  --color-warning: hsl(38, 85%, 50%);
+  --color-info: hsl(200, 70%, 52%);
+  --color-border: hsl(200, 14%, 20%);
+  --color-foreground: hsl(0, 0%, 98%);
+}
+
+body {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}

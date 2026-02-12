@@ -14,17 +14,22 @@ Sistema completo de autenticação e gerenciamento desenvolvido com React + Nest
 - **Socket.io** - Comunicação em tempo real
 - **Swagger** - Documentação da API
 - **JWT** - Autenticação via tokens
+- **Argon2id** - Hash de senhas
 - **Nodemailer** - Envio de emails
 
 ### Frontend
 - **React** - Biblioteca UI
-- **Vite** - Build tool
+- **Vite** - Build tool com proxies configurados
 - **TypeScript** - Tipagem estática
 - **TailwindCSS** - Framework CSS
 - **React Router** - Roteamento
 - **Axios** - Cliente HTTP
 - **Socket.io Client** - WebSocket client
 - **Lucide React** - Ícones
+
+### Proxies Configurados
+- `/api` → Backend Nest.js (http://localhost:3000)
+- `/storage` → Minio S3 (http://localhost:9000)
 
 ## 🎨 Paleta de Cores
 
@@ -73,33 +78,42 @@ cd w-panel
 docker-compose up -d
 ```
 
-### 3. Configure o Backend
+### 3. Instale as dependências
 ```bash
-cd backend
 npm install
+npm run install:all
+```
+
+### 4. Configure o servidor
+```bash
+cd server
 cp .env.example .env
 # Edite o .env com suas configurações
-npm run start:dev
+cd ..
 ```
 
-O backend estará rodando em `http://localhost:3000`
+### 5. Inicie o desenvolvimento
+```bash
+# Inicia ambos (servidor e cliente) simultaneamente
+npm run dev
+
+# Ou inicie separadamente:
+npm run dev:server  # Servidor em http://localhost:3000
+npm run dev:client  # Cliente em http://localhost:5173
+```
+
+O servidor estará rodando em `http://localhost:3000`
 Documentação Swagger: `http://localhost:3000/api/docs`
 
-### 4. Configure o Frontend
-```bash
-cd frontend
-npm install
-cp .env.example .env
-npm run dev
-```
-
-O frontend estará rodando em `http://localhost:5173`
+O cliente estará rodando em `http://localhost:5173`
+- API proxy: `http://localhost:5173/api` → `http://localhost:3000/api`
+- Storage proxy: `http://localhost:5173/storage` → `http://localhost:9000`
 
 ## 📁 Estrutura do Projeto
 
 ```
 w-panel/
-├── backend/                 # Aplicação Nest.js
+├── server/                 # Aplicação Nest.js
 │   ├── src/
 │   │   ├── auth/           # Módulo de autenticação
 │   │   ├── users/          # Módulo de usuários
@@ -107,7 +121,7 @@ w-panel/
 │   │   └── main.ts         # Entry point
 │   ├── .env.example
 │   └── package.json
-├── frontend/               # Aplicação React
+├── client/                 # Aplicação React
 │   ├── src/
 │   │   ├── components/     # Componentes reutilizáveis
 │   │   │   ├── layout/     # Header, Sidebar, Layout
@@ -117,15 +131,17 @@ w-panel/
 │   │   └── pages/          # Páginas da aplicação
 │   │       ├── auth/       # Login, Register, ForgotPassword
 │   │       └── dashboard/  # Dashboard
-│   ├── .env.example
 │   └── package.json
+├── vite.config.ts          # Configuração Vite (root)
+├── tsconfig.json           # TypeScript config (root)
+├── package.json            # Scripts principais
 ├── docker-compose.yml      # Infraestrutura
 └── README.md
 ```
 
 ## 🔐 Variáveis de Ambiente
 
-### Backend (.env)
+### Backend (server/.env)
 ```env
 DB_HOST=localhost
 DB_PORT=5432
@@ -151,22 +167,20 @@ MINIO_SECRET_KEY=minioadmin
 FRONTEND_URL=http://localhost:5173
 ```
 
-### Frontend (.env)
-```env
-VITE_API_URL=http://localhost:3000/api
-```
+### Frontend
+Não é necessário .env no cliente, pois os proxies são configurados no Vite.
 
 ## 🧪 Testes
 
 ### Backend
 ```bash
-cd backend
+cd server
 npm run test
 ```
 
 ### Frontend
 ```bash
-cd frontend
+cd client
 npm run test
 ```
 
@@ -174,16 +188,19 @@ npm run test
 
 ### Backend
 ```bash
-cd backend
-npm run build
-npm run start:prod
+npm run build:server
+cd server && npm run start:prod
 ```
 
 ### Frontend
 ```bash
-cd frontend
+npm run build:client
+# Os arquivos estarão em dist/client
+```
+
+### Build Completo
+```bash
 npm run build
-# Os arquivos estarão em frontend/dist
 ```
 
 ## 🌐 Endpoints da API

@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   BeforeInsert,
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as argon2 from 'argon2';
 
 @Entity('users')
 export class User {
@@ -43,11 +43,13 @@ export class User {
   @BeforeInsert()
   async hashPassword() {
     if (this.password) {
-      this.password = await bcrypt.hash(this.password, 10);
+      this.password = await argon2.hash(this.password, {
+        type: argon2.argon2id,
+      });
     }
   }
 
   async validatePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
+    return argon2.verify(this.password, password);
   }
 }

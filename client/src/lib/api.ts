@@ -31,25 +31,25 @@ api.interceptors.response.use(
   }
 );
 
-export interface LoginCredentials {
+export type LoginCredentials = {
   email: string;
   password: string;
 }
 
-export interface RegisterData {
+export type RegisterData = {
   name: string;
   email: string;
   password: string;
 }
 
-export interface User {
+export type User = {
   id: string;
   email: string;
   name: string;
   avatar?: string;
 }
 
-export interface AuthResponse {
+export type AuthResponse = {
   access_token: string;
   user: User;
 }
